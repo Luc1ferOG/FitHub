@@ -10,8 +10,9 @@ const mockBegin = jest.fn(() => 'session-id');
 jest.mock('../../hooks/use-workout-session', () => ({ useBeginWorkout: () => mockBegin }));
 jest.mock('../../hooks/use-session-history', () => ({ useSessionHistory: () => ({ data: [] }) }));
 jest.mock('../../state/session-store', () => ({ useSessionStore: (selector: (state: { hydrated: boolean }) => unknown) => selector({ hydrated: true }) }));
-jest.mock('expo-router', () => ({ Stack: { Screen: () => null }, useLocalSearchParams: () => ({ workoutId: 'workout' }), useRouter: () => ({ push: mockPush, replace: mockReplace }) }));
+jest.mock('expo-router', () => ({ ...jest.requireActual('expo-router'), Stack: { Screen: () => null }, useLocalSearchParams: () => ({ workoutId: '30000000-0000-0000-0000-000000000001' }), useRouter: () => ({ push: mockPush, replace: mockReplace }) }));
 jest.mock('@/features/auth/context/auth-context', () => ({ useAuth: () => ({ user: { id: 'owner' } }) }));
+jest.mock('@/store/app-store', () => ({ useAppStore: (select: (state: { isOffline: boolean }) => unknown) => select({ isOffline: false }) }));
 jest.mock('../../hooks/use-workouts', () => ({
   useWorkout: () => ({ data: jest.requireActual('../../testing/fixtures').workout, isPending: false, isError: false }),
   useWorkoutMutation: () => ({ mutateAsync: mockMutate, isBusy: false, error: null, reset: jest.fn() }),

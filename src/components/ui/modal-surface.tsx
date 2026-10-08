@@ -11,8 +11,7 @@ export function ModalSurface({ title, children, onClose, busy = false, presentat
 }>) {
   const theme = useAppTheme(); const { reduceMotion, screenReader } = useAccessibilityPreferences();
   const titleRef = useRef<Text>(null); const translation = useSharedValue(0); const sheet = presentation === 'sheet';
-  const busyRef = useRef(busy); busyRef.current = busy;
-  const dismiss = () => { if (!busyRef.current) onClose(); };
+  const dismiss = () => { if (!busy) onClose(); };
   const pan = Gesture.Pan().enabled(sheet && !busy && !screenReader).activeOffsetY(12)
     .onUpdate((event) => { translation.value = Math.min(100, Math.max(0, event.translationY)); })
     .onEnd((event) => { if (event.translationY > 80) runOnJS(dismiss)(); })

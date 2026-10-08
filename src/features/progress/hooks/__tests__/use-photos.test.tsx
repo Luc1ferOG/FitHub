@@ -7,10 +7,10 @@ import { photoService } from '../../services/photo-dependencies';
 jest.mock('@/features/auth/context/auth-context', () => ({ useAuth: () => ({ user: { id: '96000000-0000-0000-0000-000000000001' } }) }));
 jest.mock('../../services/photo-dependencies', () => ({ photoService: { list: jest.fn(), remove: jest.fn(), urlForPhoto: jest.fn() } }));
 let mockFocused = true;
-jest.mock('@react-navigation/native', () => ({ useIsFocused: () => mockFocused }));
+jest.mock('expo-router', () => ({ useIsFocused: () => mockFocused }));
 const owner = '96000000-0000-0000-0000-000000000001';
 it('does not persist photo metadata or failed mutations, and failed deletion refreshes recoverable rows', async () => {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { gcTime: Infinity } } });
   jest.mocked(photoService.list).mockResolvedValue({ entries: [], nextOffset: null });
   jest.mocked(photoService.remove).mockRejectedValue(new Error('Retry deletion'));
   function Wrapper({ children }: PropsWithChildren) { return <QueryClientProvider client={client}>{children}</QueryClientProvider>; }

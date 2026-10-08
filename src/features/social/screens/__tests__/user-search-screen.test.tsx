@@ -5,7 +5,7 @@ import { UserSearchScreen } from '../user-search-screen';
 import { socialService } from '../../services/social-dependencies';
 
 const mockPush = jest.fn();
-jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }) }));
+jest.mock('expo-router', () => ({ ...jest.requireActual('expo-router'), useRouter: () => ({ push: mockPush }) }));
 jest.mock('expo-image', () => ({ Image: 'Image' }));
 jest.mock('@/features/auth/context/auth-context', () => ({ useAuth: () => ({ user: { id: 'owner' } }) }));
 jest.mock('../../services/social-dependencies', () => ({ socialService: { search: jest.fn() } }));

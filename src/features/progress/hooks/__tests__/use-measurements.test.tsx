@@ -10,7 +10,7 @@ const id = '95000000-0000-0000-0000-000000000002';
 jest.mock('@/features/auth/context/auth-context', () => ({ useAuth: () => ({ user: { id: '95000000-0000-0000-0000-000000000001' } }) }));
 jest.mock('../../services/measurement-dependencies', () => ({ measurementService: { save: jest.fn(), remove: jest.fn(), list: jest.fn() } }));
 it('successful create/edit/delete invalidates all account progress periods and history, not other accounts', async () => {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false, gcTime: Infinity } } });
   const input = parseMeasurementForm({ ...emptyMeasurementForm(), weightKg: '80' }, 'metric');
   jest.mocked(measurementService.save).mockResolvedValue({ ...input, id, userId: owner });
   jest.mocked(measurementService.remove).mockResolvedValue(undefined);

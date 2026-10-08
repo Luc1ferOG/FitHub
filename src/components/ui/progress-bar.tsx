@@ -9,7 +9,7 @@ export function ProgressBar({ value, label, description }: { value: number; labe
   const progress = useSharedValue(percent);
   useEffect(() => { progress.value = reduceMotion ? percent : withTiming(percent, { duration: theme.motion.standard }); return () => cancelAnimation(progress); }, [percent, progress, reduceMotion, theme.motion.standard]);
   const animated = useAnimatedStyle(() => ({ width: `${progress.value}%` as `${number}%` }));
-  return <View accessibilityRole="progressbar" accessibilityLabel={label} accessibilityValue={{ min: 0, max: 100, now: Math.round(percent), text: description ?? `${Math.round(percent)} percent complete` }} style={{ height: 8, backgroundColor: theme.colors.border, borderRadius: theme.radius.full, overflow: 'hidden' }}>
+  return <View accessible accessibilityRole="progressbar" accessibilityLabel={label} accessibilityValue={{ min: 0, max: 100, now: Math.round(percent), text: description ?? `${Math.round(percent)} percent complete` }} style={{ height: 8, backgroundColor: theme.colors.border, borderRadius: theme.radius.full, overflow: 'hidden' }}>
     <Animated.View style={[{ height: '100%', backgroundColor: theme.colors.primary, borderRadius: theme.radius.full }, animated]} />
   </View>;
 }

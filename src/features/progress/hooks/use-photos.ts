@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from 'expo-router';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { photoService } from '../services/photo-dependencies';
 import type { PhotoMetadata, PreparedPhoto, ProgressPhoto } from '../types/progress-photo';

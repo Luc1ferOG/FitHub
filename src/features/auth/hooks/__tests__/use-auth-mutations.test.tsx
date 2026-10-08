@@ -8,7 +8,7 @@ jest.mock('../../services/auth-dependencies', () => ({ authService: { login: jes
 jest.mock('@/services/notifications/challenge-push-dependencies', () => ({ challengePushService: { disable: jest.fn() } }));
 
 it('does not retry a failed login even when the injected client retries other mutations', async () => {
-  const client = new QueryClient({ defaultOptions: { mutations: { retry: 2, retryDelay: 1 } } });
+  const client = new QueryClient({ defaultOptions: { mutations: { retry: 2, retryDelay: 1, gcTime: Infinity } } });
   jest.mocked(authService.login).mockRejectedValue(new Error('Incorrect credentials'));
   const wrapper = ({ children }: PropsWithChildren) => <QueryClientProvider client={client}>{children}</QueryClientProvider>;
   const hook = renderHook(() => useLoginMutation(), { wrapper });

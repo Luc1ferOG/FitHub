@@ -12,7 +12,8 @@ export function usePhotoDraft() {
   const working = useRef(false);
   useEffect(() => {
     alive.current = true;
-    return () => { alive.current = false; const cleanup = () => Promise.all(owned.current.map((image) => photoMedia.cleanup(image)));
+    const ownedImages = owned.current;
+    return () => { alive.current = false; const cleanup = () => Promise.all(ownedImages.map((image) => photoMedia.cleanup(image)));
       if (work.current) void work.current.then(cleanup, cleanup); else void cleanup(); };
   }, []);
   function choose(image: LocalPhoto) {

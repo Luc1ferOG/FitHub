@@ -9,7 +9,7 @@ jest.mock('react-native-gesture-handler', () => {
   for (const method of ['enabled', 'activateAfterLongPress', 'onStart', 'onUpdate', 'onEnd', 'onFinalize']) chain[method] = jest.fn(() => chain);
   return { Gesture: { Pan: () => chain }, GestureDetector: ({ children }: { children: React.ReactNode }) => children };
 });
-jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
+jest.mock('react-native-reanimated', () => jest.requireActual('react-native-reanimated/mock'));
 
 describe('workout builder', () => {
   it('edits details and exercise configuration before saving', async () => {

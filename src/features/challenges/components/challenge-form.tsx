@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import { AppText as Text } from '@/components/ui/app-text';
 import { Button, Input } from '@/components/ui';
@@ -14,7 +14,7 @@ export function ChallengeForm({ busy, error, onSave }: { busy: boolean; error: s
   const theme = useAppTheme(); const [picker,setPicker] = useState(false); const [exerciseName,setExerciseName] = useState('');
   const today = new Date().toISOString().slice(0,10);
   const form = useForm<ChallengeInput>({ resolver:zodResolver(challengeInputSchema),defaultValues:{ title:'',description:'',metric:'workout_count',target:12,startDate:today,endDate:today,visibility:'public',exerciseId:null } });
-  const metric = form.watch('metric'); const visibility = form.watch('visibility'); const disabled = busy || form.formState.isSubmitting;
+  const metric = useWatch({ control: form.control, name: 'metric' }); const visibility = useWatch({ control: form.control, name: 'visibility' }); const disabled = busy || form.formState.isSubmitting;
   const metrics: FitnessMetric[] = ['workout_count','volume_kg','repetitions','duration_seconds'];
   return <View style={{ gap:theme.spacing.md }}>
     <Controller control={form.control} name="title" render={({ field,fieldState }) => <Input ref={field.ref} label="Challenge title" value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} error={fieldState.error?.message} editable={!disabled} maxLength={150} />} />

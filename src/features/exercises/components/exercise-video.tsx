@@ -1,4 +1,4 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from 'expo-router';
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEffect, useState } from 'react';
@@ -52,7 +52,7 @@ function FocusedVideo({ url, name, onRetry }: { url: string; name: string; onRet
           player={player}
           style={styles.video}
           nativeControls
-          allowsFullscreen
+          fullscreenOptions={{ enable: true }}
           contentFit="contain"
           accessibilityLabel={`${name} form tutorial video`}
         />
@@ -74,5 +74,5 @@ const styles = StyleSheet.create({
   container: { gap: 12 },
   frame: { borderRadius: 12, overflow: 'hidden' },
   video: { width: '100%', aspectRatio: 16 / 9 },
-  loading: { ...StyleSheet.absoluteFillObject, justifyContent: 'center' },
+  loading: { ...StyleSheet.absoluteFill, justifyContent: 'center' },
 });

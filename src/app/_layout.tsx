@@ -4,7 +4,8 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { useAccessibilityPreferences } from '@/hooks/use-accessibility-preferences';
 import { useAppTheme } from '@/theme';
 
-import { ErrorBoundary, LoadingIndicator, OfflineBanner } from '@/components/feedback';
+import { ErrorBoundary, LoadingIndicator } from '@/components/feedback';
+import { OfflineBanner } from '@/components/feedback/offline-banner';
 import { AppProviders } from '@/components/providers/app-providers';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { resolveAuthRoute } from '@/features/auth/services/auth-route-guard';
@@ -30,6 +31,8 @@ function RootNavigator() {
   const navigation = useRootNavigationState();
   const intent = useNavigationIntentStore((state) => state.intent);
   const hydrated = useNavigationIntentStore((state) => state.hydrated);
+  // Intent expiry is an authorization-time wall-clock check, not a visual value.
+  // eslint-disable-next-line react-hooks/purity
   const destination = intendedDestination(intent, session?.user.id ?? null, Date.now());
   useEffect(() => {
     if (!hydrated || isInitializing) return;

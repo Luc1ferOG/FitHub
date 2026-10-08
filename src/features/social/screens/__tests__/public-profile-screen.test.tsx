@@ -3,7 +3,7 @@ import { AppThemeProvider } from '@/theme';
 import { PublicProfileScreen } from '../public-profile-screen';
 import { usePublicProfile } from '../../hooks/use-social';
 
-jest.mock('expo-router', () => ({ useLocalSearchParams: () => ({ id: 'target' }) }));
+jest.mock('expo-router', () => ({ ...jest.requireActual('expo-router'), useLocalSearchParams: () => ({ id: '93000000-0000-0000-0000-000000000001' }) }));
 jest.mock('expo-image', () => ({ Image: 'Image' }));
 jest.mock('../../components/friend-actions', () => ({ FriendActions: () => null }));
 jest.mock('../../hooks/use-social', () => ({ usePublicProfile: jest.fn() }));

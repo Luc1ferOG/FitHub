@@ -1,4 +1,4 @@
-import { ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
+import { ThemeProvider as NavigationThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import { Appearance, useColorScheme } from 'react-native';
@@ -13,8 +13,8 @@ export function AppThemeProvider({ children }: PropsWithChildren) {
   const systemColorScheme = useColorScheme();
   const preference = useAppStore((state) => state.themePreference);
   useEffect(() => {
-    Appearance.setColorScheme(preference === 'system' ? null : preference);
-    return () => Appearance.setColorScheme(null);
+    Appearance.setColorScheme(preference === 'system' ? 'unspecified' : preference);
+    return () => Appearance.setColorScheme('unspecified');
   }, [preference]);
 
   const theme = useMemo(() => {

@@ -4,7 +4,7 @@ import { makeSession } from '../../testing/session-fixtures';
 import { ActiveSetRow } from '../active-set-row';
 import { completedSetFeedback } from '@/services/device/haptics';
 
-jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
+jest.mock('react-native-reanimated', () => jest.requireActual('react-native-reanimated/mock'));
 jest.mock('@/services/device/haptics', () => ({ completedSetFeedback: jest.fn().mockResolvedValue(undefined) }));
 describe('active set row', () => {
   beforeEach(() => jest.clearAllMocks());

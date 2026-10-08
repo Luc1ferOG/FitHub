@@ -62,7 +62,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
         <TextInput
           ref={ref}
           accessibilityLabel={accessibilityLabel}
-          accessibilityLabelledBy={`${generatedId}-label`}
+          accessibilityLabelledBy={accessibilityLabel === label ? `${generatedId}-label` : undefined}
           accessibilityHint={[accessibilityHint, message].filter(Boolean).join('. ')}
           accessibilityState={{ ...accessibilityState, disabled: !editable }}
           editable={editable}

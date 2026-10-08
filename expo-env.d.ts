@@ -1,3 +1,3 @@
 /// <reference types="expo/types" />
 
-// This file is generated-style configuration and should remain checked in.
+// NOTE: This file should not be edited and should be in your git ignore

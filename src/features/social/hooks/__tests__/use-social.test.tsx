@@ -10,7 +10,7 @@ jest.mock('@/features/auth/context/auth-context', () => ({ useAuth: () => ({ use
 jest.mock('../../services/social-dependencies', () => ({ socialService: { change: jest.fn() } }));
 const relation: Friendship = { id: 'request', requesterId: 'target', addresseeId: 'owner', status: 'pending', createdAt: 'now' };
 function setup() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false, gcTime: Infinity } } });
   const key = socialKeys.relation('owner', 'target'); client.setQueryData(key, relation);
   function Wrapper({ children }: PropsWithChildren) { return <QueryClientProvider client={client}>{children}</QueryClientProvider>; }
   return { client, key, hook: renderHook(() => useFriendMutation('target'), { wrapper: Wrapper }) };
@@ -19,7 +19,7 @@ describe('social query lifecycle', () => {
   beforeEach(() => jest.clearAllMocks());
   it('debounces and cancels earlier input timers', () => {
     jest.useFakeTimers();
-    const hook = renderHook(({ input }) => useDebouncedSearch(input), { initialProps: { input: 'al' } });
+    const hook = renderHook(({ input }: { input: string }) => useDebouncedSearch(input), { initialProps: { input: 'al' } });
     act(() => jest.advanceTimersByTime(200)); hook.rerender({ input: 'alice' });
     act(() => jest.advanceTimersByTime(200)); expect(hook.result.current).toBe('');
     act(() => jest.advanceTimersByTime(150)); expect(hook.result.current).toBe('alice');

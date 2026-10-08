@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { AccessibilityInfo, ScrollView, View } from 'react-native';
 import { AppText as Text } from '@/components/ui/app-text';
@@ -25,33 +25,26 @@ export function WorkoutBuilder({ initial, busy, error, onSave }: Props) {
   const [picker, setPicker] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selectAppended = useRef(false);
   const form = useForm<WorkoutBuilderValues>({ resolver: zodResolver(builderSchema), defaultValues: {
     name: initial?.name ?? '', description: initial?.description ?? '', isPublic: initial?.isPublic ?? false,
     estimatedDuration: initial?.estimatedDuration ?? null,
     exercises: initial?.exercises.map(({ exerciseId, exerciseName, sets, reps, weight, restSeconds, notes }) => ({ exerciseId, exerciseName, sets, reps, weight, restSeconds, notes })) ?? [],
   } });
   const { fields, append, remove, move } = useFieldArray({ control: form.control, name: 'exercises' });
-  useEffect(() => {
-    if (!selectAppended.current) return;
-    const added = fields[fields.length - 1];
-    if (added) setSelectedId(added.id);
-    selectAppended.current = false;
-  }, [fields]);
   const selectedIndex = fields.findIndex((field) => field.id === selectedId);
-  const currentIndex = selectedIndex >= 0 ? selectedIndex : fields.length > 0 ? 0 : -1;
+  const currentIndex = selectedId === 'latest' ? fields.length - 1 : selectedIndex >= 0 ? selectedIndex : fields.length > 0 ? 0 : -1;
   const current = fields[currentIndex];
   const disabled = busy || form.formState.isSubmitting;
   const moveExercise = useCallback((from: number, to: number) => {
     if (from === to) return;
+    if (selectedId === 'latest' && current) setSelectedId(current.id);
     move(from, to);
     AccessibilityInfo.announceForAccessibility(`Exercise moved to position ${to + 1}`);
-  }, [move]);
+  }, [current, move, selectedId]);
   const add = (exercise: ExerciseSummary) => {
-    selectAppended.current = true;
     append({ exerciseId: exercise.id, exerciseName: exercise.name, sets: 3, reps: 10, weight: null, restSeconds: 60, notes: '' });
     setPicker(false);
-    setSelectedId(null);
+    setSelectedId('latest');
   };
   return <View style={{ flex: 1 }}>
     <ScrollView automaticallyAdjustKeyboardInsets scrollEnabled={!dragging} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ gap: 24, paddingBottom: 32 }}>

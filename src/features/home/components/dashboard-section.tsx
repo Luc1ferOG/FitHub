@@ -60,7 +60,7 @@ export const DashboardSection = memo(function DashboardSection({ section, dashbo
         <Text style={[theme.typography.bodyStrong, { color: theme.colors.text }]}>{item.title}</Text>
         <Text style={textStyle}>{item.detail} · {new Date(item.occurred_at).toLocaleDateString()}</Text>
         {item.kind === 'friend_achievement' && item.user_id ? <Button label="View friend profile" accessibilityLabel={`View profile for ${item.title}`} variant="ghost" onPress={() => router.push({ pathname: '/user/[id]', params: { id: item.user_id ?? '' } })} /> : null}
-      </View>) : <Text style={textStyle}>Workouts, friends' milestones, and challenge updates will appear here.</Text>}
+      </View>) : <Text style={textStyle}>{"Workouts, friends' milestones, and challenge updates will appear here."}</Text>}
       <Button label="Workout history" variant="ghost" onPress={() => router.push('/workouts/history')} />
     </Card> : null}
   </MotionView>;

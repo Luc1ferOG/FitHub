@@ -1,9 +1,8 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { Pressable, View } from 'react-native';
 import { AppText as Text } from '@/components/ui/app-text';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { runOnJS } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Button } from '@/components/ui';
 import { useAppTheme } from '@/theme';
 import { useResponsiveLayout } from '@/hooks/use-responsive-layout';
@@ -23,7 +22,7 @@ const DragRow = memo(function DragRow({ item, index, count, selectedId, disabled
   const rowHeight = Math.ceil((compact ? 120 : 80) * Math.max(1, fontScale));
   const translation = useSharedValue(0);
   const active = useSharedValue(false);
-  const gesture = useMemo(() => Gesture.Pan().enabled(!disabled && !screenReader).activateAfterLongPress(200)
+  const gesture = Gesture.Pan().enabled(!disabled && !screenReader).activateAfterLongPress(200)
     .onStart(() => { active.value = true; runOnJS(onDrag)(true); })
     .onUpdate((event) => { translation.value = Math.max(-index * rowHeight, Math.min((count - index - 1) * rowHeight, event.translationY)); })
     .onEnd(() => {
@@ -31,8 +30,7 @@ const DragRow = memo(function DragRow({ item, index, count, selectedId, disabled
       translation.value = 0;
       runOnJS(onMove)(index, target);
     })
-    .onFinalize(() => { translation.value = reduceMotion ? 0 : withSpring(0); active.value = false; runOnJS(onDrag)(false); }),
-  [active, count, disabled, index, onDrag, onMove, translation, rowHeight, reduceMotion, screenReader]);
+    .onFinalize(() => { translation.value = reduceMotion ? 0 : withSpring(0); active.value = false; runOnJS(onDrag)(false); });
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ translateY: translation.value }], zIndex: active.value ? 10 : 0, elevation: active.value ? 8 : 0, opacity: active.value ? 0.85 : 1 }));
   return <Animated.View style={[{ height: rowHeight, paddingBottom: 8 }, animatedStyle]}>
     <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: selectedId === item.id ? theme.colors.primary : theme.colors.border }}>

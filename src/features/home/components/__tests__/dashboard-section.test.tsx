@@ -3,7 +3,7 @@ import { AppThemeProvider } from '@/theme';
 import type { HomeDashboard } from '../../types/dashboard';
 import { DashboardSection } from '../dashboard-section';
 const mockPush = jest.fn();
-jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }) }));
+jest.mock('expo-router', () => ({ ...jest.requireActual('expo-router'), useRouter: () => ({ push: mockPush }) }));
 const data: HomeDashboard = { generatedAt: '2026-10-07T10:00:00Z', localDay: '2026-10-07', profile: { displayName: 'Alex', units: 'metric' }, today: { workouts: 1 }, week: { workouts: 3, durationSeconds: 7200, volumeKg: 10000 }, activeChallengeCount: 2,
   templates: [{ id: '91000000-0000-0000-0000-000000000001', name: 'Upper body', estimated_duration: 2700, updated_at: '2026-10-07T10:00:00Z' }], challenges: [], latestAchievement: null, activity: [] };
 beforeEach(() => mockPush.mockClear());

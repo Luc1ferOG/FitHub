@@ -22,7 +22,8 @@ export function SessionLifecycleProvider({ children }: PropsWithChildren) {
   const [notificationError, setNotificationError] = useState<string | null>(null);
   const notificationQueue = useRef(Promise.resolve());
   const currentUser = useRef(user?.id);
-  currentUser.current = user?.id;
+  useEffect(() => { currentUser.current = user?.id; }, [user?.id]);
+  const canSync = useCallback((owner: string) => currentUser.current === owner && !useAppStore.getState().isOffline, []);
   const notifications = useMemo(() => new RestNotifications(), []);
   const worker = useMemo(() => new SessionSyncService(sessionRepository, {
     sessions: () => sessionStore.getState().sessions,
@@ -30,7 +31,9 @@ export function SessionLifecycleProvider({ children }: PropsWithChildren) {
     fail: (id, owner, message) => sessionStore.getState().fail(id, owner, message),
   }, Date.now, (owner) => {
     for (const queryKey of writeInvalidationKeys('workout-session', owner)) void client.invalidateQueries({ queryKey });
-  }, { queue: syncQueueRepository, canSync: (owner) => currentUser.current === owner && !useAppStore.getState().isOffline }), [client]);
+  // The worker stores this authorization callback; its constructor never calls it.
+  // eslint-disable-next-line react-hooks/refs
+  }, { queue: syncQueueRepository, canSync }), [canSync, client]);
   const run = useCallback(async (force = false) => {
     if (!user || offline || !sessionStore.getState().hydrated) return;
     setSyncing(true);
@@ -40,7 +43,11 @@ export function SessionLifecycleProvider({ children }: PropsWithChildren) {
   const pendingKey = sessions.filter((session) => session.userId === user?.id && session.submittedAt !== null && session.syncStatus !== 'synced')
     .map((session) => `${session.id}:${session.syncStatus}`).join('|');
   useEffect(() => { sessionStore.getState().restore(); }, []);
-  useEffect(() => { if (hydrated && pendingKey) void run(); }, [hydrated, pendingKey, run]);
+  useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(() => { if (!cancelled && hydrated && pendingKey) void run(); });
+    return () => { cancelled = true; };
+  }, [hydrated, pendingKey, run]);
   useEffect(() => {
     const interval = setInterval(() => { if (AppState.currentState === 'active') void run(); }, 15000);
     const subscription = AppState.addEventListener('change', (state) => { if (state === 'active') void run(); });

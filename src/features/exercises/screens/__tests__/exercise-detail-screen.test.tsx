@@ -6,6 +6,7 @@ import { useExercise } from '../../hooks/use-exercises';
 import { ExerciseDetailScreen } from '../exercise-screens';
 
 jest.mock('expo-router', () => ({
+  ...jest.requireActual('expo-router'),
   useLocalSearchParams: () => ({ exerciseId: '10000000-0000-0000-0000-000000000001' }),
   Stack: { Screen: () => null },
 }));
@@ -20,7 +21,7 @@ describe('exercise detail guide', () => {
       equipment: 'barbell', difficulty: 'intermediate' as const, thumbnailUrl: null, videoUrl: null,
       instructions: ['Brace your trunk.'], formTips: ['Keep the heel grounded.'], commonMistakes: ['Knees collapsing inward.'],
     };
-    jest.mocked(useExercise).mockReturnValue({ data, error: null, isPending: false, fetchStatus: 'idle' } as ReturnType<typeof useExercise>);
+    jest.mocked(useExercise).mockReturnValue({ data, error: null, isPending: false, fetchStatus: 'idle' } as unknown as ReturnType<typeof useExercise>);
     render(<AppThemeProvider><ExerciseDetailScreen /></AppThemeProvider>);
     expect(useExercise).toHaveBeenCalledWith(data.id);
     expect(screen.getByText('Primary muscle: quadriceps')).toBeTruthy();

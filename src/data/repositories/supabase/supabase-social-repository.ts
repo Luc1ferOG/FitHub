@@ -3,7 +3,7 @@ import { AppError } from '@/domain/errors/app-error';
 import type { SocialRepository } from '@/features/social/repositories/social-repository';
 import type { Friendship } from '@/features/social/types/friendship';
 import type { FriendAction, FriendListKind, SocialPage } from '@/features/social/types/social';
-import { friendListResponse, friendshipResponse, profileResponse, publicUserResponse, searchResponse } from '@/features/social/validation/social-response';
+import { friendListResponse, friendshipResponse, profileResponse, type publicUserResponse, searchResponse } from '@/features/social/validation/social-response';
 import { supabase } from '@/lib/supabase';
 import type { Database } from '@/types/database';
 

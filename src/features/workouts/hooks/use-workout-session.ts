@@ -49,7 +49,11 @@ export function useWorkoutSession(id: string) {
     if (!user || !history.data) return;
     const current = sessionStore.getState().sessions.find((item) => item.id === id && item.userId === user.id);
     if (!current || current.submittedAt !== null) return;
-    try { sessionStore.getState().replace(applyHistory(current, history.data)); } catch (cause) { setError(getErrorMessage(cause)); }
+    try { sessionStore.getState().replace(applyHistory(current, history.data)); } catch (cause) {
+      // Surface failures from synchronization with the external persisted store.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setError(getErrorMessage(cause));
+    }
   }, [history.data, id, user]);
   const dispatch = useCallback((action: SessionAction) => {
     if (!user) return;
@@ -57,7 +61,9 @@ export function useWorkoutSession(id: string) {
   }, [id, user]);
   const restEndsAt = session?.restEndsAt ?? null;
   useEffect(() => {
-    if (restEndsAt !== null && restEndsAt <= now) dispatch({ type: 'skip-rest' });
+    if (restEndsAt === null || restEndsAt > now) return;
+    const timer = setTimeout(() => dispatch({ type: 'skip-rest' }), 0);
+    return () => clearTimeout(timer);
   }, [dispatch, now, restEndsAt]);
   const records = useMemo<ReturnType<typeof sessionRecords>>(() => session ? sessionRecords(session) : { setIds: [], records: [], provisional: true }, [session]);
   return { session, hydrated, storageError, error, dispatch, now, records,

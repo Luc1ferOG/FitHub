@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import type { PropsWithChildren } from 'react';
+import type { ExerciseFilters } from '../../types/exercise';
 
 import { exerciseService } from '../../services/exercise-dependencies';
 import { DEFAULT_EXERCISE_FILTERS } from '../../services/exercise-service';
@@ -35,7 +36,7 @@ describe('exercise queries', () => {
       .mockResolvedValueOnce({ items: [], nextOffset: null })
       .mockResolvedValueOnce({ items: [], nextOffset: null });
     const { Wrapper, client } = setup();
-    const hook = renderHook((filters) => useExercises(filters), { initialProps: DEFAULT_EXERCISE_FILTERS, wrapper: Wrapper });
+    const hook = renderHook((filters: ExerciseFilters) => useExercises(filters), { initialProps: DEFAULT_EXERCISE_FILTERS, wrapper: Wrapper });
     await waitFor(() => expect(hook.result.current.isSuccess).toBe(true));
     await act(async () => { await hook.result.current.fetchNextPage(); });
     expect(exerciseService.list).toHaveBeenNthCalledWith(2, DEFAULT_EXERCISE_FILTERS, 20, expect.any(AbortSignal));

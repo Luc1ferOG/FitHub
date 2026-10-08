@@ -8,12 +8,12 @@ import type { AuthSession } from '../../types/auth';
 import { LoginScreen } from '../login-screen';
 import { RegisterScreen } from '../register-screen';
 
-jest.mock('expo-router', () => ({ Link: ({ children }: PropsWithChildren) => children }));
+jest.mock('expo-router', () => ({ ...jest.requireActual('expo-router'), Link: ({ children }: PropsWithChildren) => children }));
 jest.mock('../../services/auth-dependencies', () => ({ authService: { login: jest.fn(), register: jest.fn() } }));
 jest.mock('@/services/notifications/challenge-push-dependencies', () => ({ challengePushService: { disable: jest.fn() } }));
 const session: AuthSession = { user: { id: '99000000-0000-0000-0000-000000000001', email: 'alex@example.test' }, expiresAt: null };
 function setup(component: ReactElement) {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false, gcTime: Infinity } } });
   const view = render(<QueryClientProvider client={client}><AppThemeProvider>{component}</AppThemeProvider></QueryClientProvider>);
   return () => { view.unmount(); client.clear(); };
 }
@@ -52,7 +52,7 @@ describe('login form', () => {
       expect(screen.getByLabelText('Password').props['secureTextEntry']).toBe(false);
       fireEvent.press(screen.getByRole('button', { name: 'Hide password' }));
       fireEvent.press(screen.getByRole('button', { name: 'Log in' }));
-      await waitFor(() => expect(authService.login).toHaveBeenCalledWith({ email: 'alex@example.test', password: 'SecurePass42!' }));
+      await waitFor(() => expect(jest.mocked(authService.login).mock.calls[0]?.[0]).toEqual({ email: 'alex@example.test', password: 'SecurePass42!' }));
     } finally { cleanup(); }
   });
   it.each([
@@ -103,7 +103,7 @@ describe('registration form', () => {
     try {
       enterRegistration(); fireEvent.press(screen.getByRole('button', { name: 'Create account' }));
       expect(await screen.findByText('Account created. Check your email to confirm your address, then log in.')).toBeTruthy();
-      expect(authService.register).toHaveBeenCalledWith({ username: 'fit_alex', displayName: 'Alex Example', email: 'alex@example.test',
+      expect(jest.mocked(authService.register).mock.calls[0]?.[0]).toEqual({ username: 'fit_alex', displayName: 'Alex Example', email: 'alex@example.test',
         password: 'SecurePass42!', confirmPassword: 'SecurePass42!' });
     } finally { cleanup(); }
   });

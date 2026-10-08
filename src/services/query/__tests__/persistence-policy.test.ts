@@ -4,7 +4,8 @@ import { writeInvalidationKeys } from '../write-invalidation';
 
 it('does not serialize paused login credentials even if a caller opts into persistence', () => {
   const client = new QueryClient();
-  const mutation = client.getMutationCache().build(client, { mutationKey: ['login'], meta: { persist: true },
+  // This synthetic paused mutation never settles; its GC timer is irrelevant to serialization.
+  const mutation = client.getMutationCache().build(client, { mutationKey: ['login'], meta: { persist: true }, gcTime: Infinity,
     mutationFn: async (_input: { email: string; password: string }) => undefined });
   mutation.state = { ...mutation.state, status: 'pending', isPaused: true, variables: { email: 'alex@example.test', password: 'private-password' } };
   const snapshot = dehydrate(client, { shouldDehydrateMutation: shouldPersistMutation });

@@ -9,10 +9,11 @@ let mockStatus = 'readyToPlay';
 let mockIsFocused = true;
 let mockIsPlaying = false;
 const mockPlayer = { play: jest.fn(), pause: jest.fn(), loop: false, playing: false, status: 'readyToPlay' };
-jest.mock('@react-navigation/native', () => ({
-  ...jest.requireActual('@react-navigation/native'), useIsFocused: () => mockIsFocused,
+jest.mock('expo-router', () => ({
+  ...jest.requireActual('expo-router'), useIsFocused: () => mockIsFocused,
 }));
 jest.mock('expo', () => ({
+  ...jest.requireActual('expo'),
   useEvent: (_player: unknown, event: string) => event === 'statusChange' ? { status: mockStatus } : { isPlaying: mockIsPlaying },
 }));
 jest.mock('expo-video', () => ({
@@ -21,7 +22,11 @@ jest.mock('expo-video', () => ({
 }));
 
 describe('ExerciseVideo', () => {
-  beforeEach(() => { jest.clearAllMocks(); mockStatus = 'readyToPlay'; mockIsFocused = true; mockIsPlaying = false; });
+  beforeEach(() => {
+    jest.clearAllMocks(); mockStatus = 'readyToPlay'; mockIsFocused = true; mockIsPlaying = false;
+    jest.spyOn(AppState, 'addEventListener').mockImplementation(() => ({ remove: jest.fn() }));
+  });
+  afterEach(() => jest.restoreAllMocks());
 
   it('does not autoplay and provides an accessible play control', () => {
     render(<AppThemeProvider><ExerciseVideo url="https://example.com/squat.mp4" name="Squat" /></AppThemeProvider>);
@@ -48,7 +53,7 @@ describe('ExerciseVideo', () => {
     mockStatus = 'loading';
     render(<AppThemeProvider><ExerciseVideo url="https://example.com/squat.mp4" name="Squat" /></AppThemeProvider>);
     expect(screen.getByRole('progressbar', { name: 'Loading tutorial' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Play tutorial' }).props.accessibilityState.disabled).toBe(true);
+    expect(screen.getByRole('button', { name: 'Play tutorial' }).props['accessibilityState'].disabled).toBe(true);
   });
 
   it('pauses on background and removes the app-state listener on unmount', () => {

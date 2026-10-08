@@ -1,7 +1,8 @@
 import { act, renderHook } from '@testing-library/react-native';
+import type * as ReactModule from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
 import { useWorkoutClock } from '../use-workout-clock';
-jest.mock('expo-router', () => ({ useFocusEffect: (effect: () => void | (() => void)) => jest.requireActual<typeof import('react')>('react').useEffect(effect, [effect]) }));
+jest.mock('expo-router', () => ({ useFocusEffect: (effect: () => void | (() => void)) => jest.requireActual<typeof ReactModule>('react').useEffect(effect, [effect]) }));
 
 it('stops display ticks in background and restores absolute time on resume', () => {
   jest.useFakeTimers(); jest.setSystemTime(0);

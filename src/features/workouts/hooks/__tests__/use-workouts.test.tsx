@@ -12,7 +12,7 @@ jest.mock('../../services/workout-dependencies', () => ({ workoutService: {
 } }));
 
 function setup() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false, gcTime: Infinity } } });
   const key = workoutKeys.list('owner', 0);
   client.setQueryData(key, { items: [workout], nextOffset: null });
   function Wrapper({ children }: PropsWithChildren) { return <QueryClientProvider client={client}>{children}</QueryClientProvider>; }

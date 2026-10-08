@@ -47,8 +47,8 @@ Use a consistent device frame/size, supply descriptive alt text when embedding t
 
 | Technology | Role in FitHub |
 | --- | --- |
-| React Native 0.81 / React 19 | Native Android/iOS UI with shared feature components |
-| Expo SDK 54 | Native integrations, configuration plugins, development tooling and bundling |
+| React Native 0.86 / React 19.2 | Native Android/iOS UI with shared feature components |
+| Expo SDK 57 | Native integrations, configuration plugins, development tooling and bundling |
 | TypeScript | Strict contracts between UI, services, domain models and repositories |
 | Expo Router | File-based authentication, tabs, nested routes and native deep-link handling |
 | Supabase / PostgreSQL | Auth, relational persistence, RLS, transactional RPCs, Realtime and Storage |

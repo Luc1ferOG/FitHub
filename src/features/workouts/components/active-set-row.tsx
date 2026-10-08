@@ -34,8 +34,8 @@ export const ActiveSetRow = memo(function ActiveSetRow({ set, index, exerciseId,
     </View>
     <Text style={[theme.typography.caption, { color: theme.colors.textMuted }]}>Previous: {previous ? `${previous.weight} kg × ${previous.reps}` : 'No previous result cached'}</Text>
     <View style={{ flexDirection: compact ? 'column' : 'row', gap: theme.spacing.md }}>
-      <Input label="Weight (kg)" accessibilityLabel={`${prefix}, weight in kilograms`} value={set.weight} keyboardType="decimal-pad" maxLength={16} editable={!disabled && !completed} containerStyle={{ flex: 1 }} onChangeText={(value) => onAction({ type: 'set-value', exerciseId, setId: set.id, field: 'weight', value }) />
-      <Input label="Reps" accessibilityLabel={`${prefix}, reps`} value={set.reps} keyboardType="number-pad" maxLength={5} editable={!disabled && !completed} containerStyle={{ flex: 1 }} onChangeText={(value) => onAction({ type: 'set-value', exerciseId, setId: set.id, field: 'reps', value }) />
+      <Input label="Weight (kg)" accessibilityLabel={`${prefix}, weight in kilograms`} value={set.weight} keyboardType="decimal-pad" maxLength={16} editable={!disabled && !completed} containerStyle={{ flex: 1 }} onChangeText={(value) => onAction({ type: 'set-value', exerciseId, setId: set.id, field: 'weight', value })} />
+      <Input label="Reps" accessibilityLabel={`${prefix}, reps`} value={set.reps} keyboardType="number-pad" maxLength={5} editable={!disabled && !completed} containerStyle={{ flex: 1 }} onChangeText={(value) => onAction({ type: 'set-value', exerciseId, setId: set.id, field: 'reps', value })} />
     </View>
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
       <Pressable accessibilityRole="checkbox" accessibilityLabel={`${prefix}, completed`} accessibilityState={{ checked: completed, disabled }} disabled={disabled} onPress={() => onAction({ type: 'toggle-set', exerciseId, setId: set.id, now: Date.now() })} style={{ minHeight: 48, minWidth: 48, padding: 12 }}>

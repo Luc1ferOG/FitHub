@@ -9,7 +9,7 @@ export class NotificationService {
   initialize(): () => void {
     if (Platform.OS === 'web') return () => undefined;
     Notifications.setNotificationHandler({ handleNotification: async (notification) => {
-      const kind = notification.request.content.data['kind'];
+      const kind = notification.request.content.data?.['kind'];
       const visible = (kind !== 'workout-rest' && kind !== 'rest_timer_completed') || AppState.currentState !== 'active';
       return { shouldPlaySound: visible, shouldSetBadge: false, shouldShowBanner: visible, shouldShowList: visible };
     } });

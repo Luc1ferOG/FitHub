@@ -5,7 +5,7 @@ import { ChallengeSummary } from '../challenge-summary';
 import type { ChallengeDetails } from '../../types/fitness-challenge';
 
 const mockMutate = jest.fn();
-jest.mock('expo-router',() => ({ useRouter:() => ({ push:jest.fn() }) }));
+jest.mock('expo-router',() => ({ ...jest.requireActual('expo-router'), useRouter:() => ({ push:jest.fn() }) }));
 jest.mock('@/features/auth/context/auth-context',() => ({ useAuth:() => ({ user:{ id:'owner' } }) }));
 jest.mock('../../hooks/use-challenges',() => ({ useChallengeAction:() => ({ mutate:mockMutate,isPending:false,error:null }) }));
 jest.mock('../invite-friends-picker',() => ({ InviteFriendsPicker:() => null }));

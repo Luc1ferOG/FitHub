@@ -4,7 +4,7 @@ import { AchievementsScreen } from '../achievements-screen';
 import { useAchievements } from '../../hooks/use-achievements';
 jest.mock('../../hooks/use-achievements', () => ({ useAchievements: jest.fn() }));
 function query(value: Partial<ReturnType<typeof useAchievements>>) {
-  jest.mocked(useAchievements).mockReturnValue(value as ReturnType<typeof useAchievements>);
+  jest.mocked(useAchievements).mockReturnValue({ isRefetching: false, refetch: jest.fn(), ...value } as ReturnType<typeof useAchievements>);
 }
 it('separates unlocked and locked badges and shows progress', () => {
   const entry = { id: 'one', code: 'FIRST_WORKOUT', title: 'First Workout', description: 'Complete a workout.', icon: 'barbell-outline', category: 'consistency' as const,

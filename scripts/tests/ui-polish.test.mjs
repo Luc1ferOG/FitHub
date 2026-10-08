@@ -20,7 +20,7 @@ const haptics = new SyntheticModule(['performAndroidHapticsAsync', 'notification
 async function load(path) {
   const module = source(path);
   await module.link((specifier, parent) => {
-    if (specifier === '@react-navigation/native') return navigation;
+    if (specifier === 'expo-router') return navigation;
     if (specifier === 'react-native') return native;
     if (specifier === 'expo-haptics') return haptics;
     return source(specifier.startsWith('@/') ? `src/${specifier.slice(2)}.ts` : `${posix.normalize(posix.join(posix.dirname(parent.identifier), specifier))}.ts`);
@@ -74,7 +74,7 @@ test('reduced motion is subscribed centrally and animations cannot gate actions'
 test('bottom sheets expose close, escape and busy safeguards without nested lists', () => {
   const modal = readFileSync('src/components/ui/modal-surface.tsx', 'utf8');
   assert.match(modal, /accessibilityViewIsModal/); assert.match(modal, /onAccessibilityEscape/);
-  assert.match(modal, /if \(!busyRef.current\) onClose\(\)/); assert.match(modal, /setAccessibilityFocus/);
+  assert.match(modal, /if \(!busy\) onClose\(\)/); assert.match(modal, /setAccessibilityFocus/);
   for (const path of ['src/features/workouts/components/exercise-picker.tsx', 'src/features/challenges/components/invite-friends-picker.tsx']) {
     const code = readFileSync(path, 'utf8'); assert.match(code, /presentation="sheet" scroll=\{false\}/); assert.match(code, /FlatList/);
   }

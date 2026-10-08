@@ -9,6 +9,7 @@ import { ExerciseLibraryScreen } from '../exercise-library-screen';
 
 const mockPush = jest.fn();
 jest.mock('expo-router', () => ({
+  ...jest.requireActual('expo-router'),
   useRouter: () => ({ push: mockPush }), Stack: { Screen: () => null },
 }));
 jest.mock('expo-image', () => ({ Image: 'Image' }));
