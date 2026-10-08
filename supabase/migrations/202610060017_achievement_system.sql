@@ -105,11 +105,11 @@ begin
  select count(*) into prs from public.workout_sets ws join public.workout_session_exercises se on se.id=ws.session_exercise_id
  join public.workout_sessions s on s.id=se.session_id where s.user_id=p_user and s.completed_at is not null
  and s.sync_status='synced' and ws.completed and ws.is_personal_record;
- with days as(select distinct (started_at at time zone 'UTC')::date day from public.workout_sessions
+ with workout_days as(select distinct (started_at at time zone 'UTC')::date as workout_day from public.workout_sessions
    where user_id=p_user and completed_at is not null and sync_status='synced'),
- groups as(select day-row_number() over(order by day)::integer grp from days),
- lengths as(select count(*) n from groups group by grp)
- select coalesce(max(n),0) into streak from lengths;
+ streak_groups as(select workout_day-row_number() over(order by workout_day)::integer as streak_group from workout_days),
+ streak_lengths as(select count(*) as streak_length from streak_groups group by streak_group)
+ select coalesce(max(streak_length),0) into streak from streak_lengths;
  metrics:=jsonb_build_object('workout_count',workouts,'total_volume',volume,'personal_records',prs,'streak_days',streak,
  'friend_count',case when exists(select 1 from public.achievement_events where user_id=p_user and event_type='FriendAdded')
    or exists(select 1 from public.friendships where status='accepted' and p_user in(requester_id,addressee_id)) then 1 else 0 end,

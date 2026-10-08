@@ -105,7 +105,9 @@ test('realtime owner filter, validated event hints, reconnect and cleanup', asyn
 });
 test('SQL uses confirmed facts, UTC longest streak, idempotent inserts and owner authorization', () => {
   assert.doesNotMatch(migration, /(?:\bas|\bend;)\s+\$(?!\$)/m);
-  for (const pattern of [/sync_status='synced'/, /at time zone 'UTC'/, /select distinct .*::date day/, /coalesce\(max\(n\),0\)/, /ws.completed and ws.is_personal_record/, /on conflict\(user_id,achievement_id\) do nothing/, /auth.uid\(\) is distinct from p_user/, /where user_id=p_user and achievement_id=p_id/]) assert.match(migration, pattern);
+  for (const pattern of [/sync_status='synced'/, /at time zone 'UTC'/, /select distinct .*::date as workout_day/, /coalesce\(max\(streak_length\),0\)/, /ws.completed and ws.is_personal_record/, /on conflict\(user_id,achievement_id\) do nothing/, /auth.uid\(\) is distinct from p_user/, /where user_id=p_user and achievement_id=p_id/]) assert.match(migration, pattern);
+  assert.doesNotMatch(migration, /::date\s+day\b/);
+  assert.match(migration, /workout_day-row_number\(\) over\(order by workout_day\)::integer as streak_group/);
   assert.match(migration, /awarded := private.evaluate_achievements\(actor\)/);
   assert.match(migration, /where id=any\(ids\)/);
   assert.match(migration, /end_date\+7</);
