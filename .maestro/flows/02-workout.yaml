@@ -1,0 +1,78 @@
+appId: com.fithub.app
+name: Create, log and complete a workout
+tags: [critical, workouts]
+---
+- runFlow: ../helpers/login.yaml
+- tapOn: 'Workouts'
+- tapOn: 'Create workout'
+- tapOn: 'Workout name'
+- inputText: 'E2E Workout ${E2E_RUN_ID}'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Add exercise'
+    direction: DOWN
+- tapOn: 'Add exercise'
+- tapOn: 'Find an exercise to add'
+- inputText: 'Back Squat'
+- hideKeyboard
+- extendedWaitUntil:
+    visible: 'Back Squat.*Primary muscle.*'
+    timeout: 30000
+- tapOn: 'Back Squat.*Primary muscle.*'
+- scrollUntilVisible:
+    element: 'Target sets'
+    direction: DOWN
+- tapOn: 'Target sets'
+- eraseText
+- inputText: '1'
+- tapOn: 'Target reps'
+- eraseText
+- inputText: '8'
+- tapOn: 'Target weight \(kg, optional\)'
+- inputText: '20'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Save workout'
+    direction: DOWN
+- tapOn: 'Save workout'
+- extendedWaitUntil:
+    visible: 'Workout saved successfully\.'
+    timeout: 30000
+- tapOn: 'Start Workout'
+- extendedWaitUntil:
+    visible: 'Back Squat, set 1, reps'
+    timeout: 30000
+- tapOn: 'Back Squat, set 1, weight in kilograms'
+- eraseText
+- inputText: '20'
+- tapOn: 'Back Squat, set 1, reps'
+- eraseText
+- inputText: '8'
+- hideKeyboard
+- tapOn: 'Back Squat, set 1, completed'
+- scrollUntilVisible:
+    element: 'Finish workout and review'
+    direction: DOWN
+- tapOn: 'Finish workout and review'
+- assertVisible: 'Review your workout'
+- assertVisible: 'Completed sets: 1'
+- assertVisible: 'Total reps: 8'
+- assertVisible: 'Weight volume: 160\.00 kg·reps'
+- scrollUntilVisible:
+    element: 'Save workout'
+    direction: DOWN
+- tapOn: 'Save workout'
+- repeat:
+    times: 17
+    while:
+      visible: 'Achievement unlocked!'
+    commands:
+      - tapOn: 'Continue'
+- scrollUntilVisible:
+    element: 'Synchronized successfully\.'
+    direction: UP
+- assertVisible: 'Synchronized successfully\.'
+- scrollUntilVisible:
+    element: 'Workout saved'
+    direction: UP
+- assertVisible: 'Workout saved'

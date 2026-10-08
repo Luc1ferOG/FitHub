@@ -1,0 +1,44 @@
+name: FitHub quality gates
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+permissions:
+  contents: read
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  application:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: '1'
+      # Public, nonfunctional build fixtures. No backend requests are authorized here.
+      EXPO_PUBLIC_SUPABASE_URL: https://build-fixture.supabase.co
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: build-fixture-not-a-real-key
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require reproducible dependencies
+        run: |
+          test -f package-lock.json || { echo 'Generate and review package-lock.json on a network-enabled machine; npm ci cannot run without it.'; exit 1; }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test:coverage
+      - run: npm run test:integration
+      - run: npm run test:core
+      - run: npm run db:verify
+      - run: npm run production:config
+      - run: npm run production:dependencies
+      - run: npm run production:android
+      - run: npm run production:ios
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: application-verification
+          path: artifacts/
+          if-no-files-found: ignore

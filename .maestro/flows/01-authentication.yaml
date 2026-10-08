@@ -1,0 +1,55 @@
+appId: com.fithub.app
+name: Register and log in to Home
+tags: [critical, auth]
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: 'Welcome back'
+    timeout: 30000
+- tapOn: 'Create an account'
+- tapOn: 'Username'
+- inputText: 'e2e_${E2E_RUN_ID}_reg'
+- tapOn: 'Display name'
+- inputText: 'E2E Athlete'
+- tapOn: 'Email'
+- inputText: 'e2e_${E2E_RUN_ID}_reg@example.test'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Password'
+    direction: DOWN
+- tapOn: 'Password'
+- inputText: '${E2E_PASSWORD}'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Confirm password'
+    direction: DOWN
+- tapOn: 'Confirm password'
+- inputText: '${E2E_PASSWORD}'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Create account'
+    direction: DOWN
+- tapOn: 'Create account'
+# Test-only local Supabase must disable email confirmation. Production behavior is unchanged.
+- extendedWaitUntil:
+    visible: 'Good .*, E2E Athlete'
+    timeout: 30000
+- tapOn: 'Profile'
+- scrollUntilVisible:
+    element: 'Log out'
+    direction: DOWN
+- tapOn: 'Log out'
+- extendedWaitUntil:
+    visible: 'Welcome back'
+    timeout: 30000
+- tapOn: 'Email'
+- inputText: 'e2e_${E2E_RUN_ID}_reg@example.test'
+- tapOn: 'Password'
+- inputText: '${E2E_PASSWORD}'
+- hideKeyboard
+- tapOn: 'Log in'
+- extendedWaitUntil:
+    visible: 'Good .*, E2E Athlete'
+    timeout: 30000
+- assertNotVisible: 'Welcome back'

@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "FitHub",
+    "slug": "fithub",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "fithub",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      ["expo-notifications", { "defaultChannel": "challenges" }],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow FitHub to take progress photos.",
+          "recordAudioAndroid": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow FitHub to select progress photos.",
+          "cameraPermission": "Allow FitHub to take progress photos.",
+          "microphonePermission": false
+        }
+      ],
+      "expo-sqlite",
+      ["expo-secure-store", { "configureAndroidBackup": true }]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fithub.app"
+    },
+    "android": {
+      "softwareKeyboardLayoutMode": "resize",
+      "package": "com.fithub.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B1220"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    }
+  }
+}

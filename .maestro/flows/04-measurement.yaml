@@ -1,0 +1,34 @@
+appId: com.fithub.app
+name: Add measurement and view progress
+tags: [critical, progress]
+---
+- runFlow: ../helpers/login.yaml
+- tapOn: 'Progress'
+- tapOn: 'Add measurement'
+- tapOn: 'Metric · kg / cm'
+- tapOn: 'Body weight \(kg\)'
+- inputText: '80'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Waist \(cm\)'
+    direction: DOWN
+- tapOn: 'Waist \(cm\)'
+- inputText: '85'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Save measurement'
+    direction: DOWN
+- tapOn: 'Save measurement'
+- extendedWaitUntil:
+    visible: 'Measurement history'
+    timeout: 30000
+- assertVisible: 'Body weight: 80\.0 kg'
+- assertVisible: 'Waist: 85\.0 cm'
+- back
+- extendedWaitUntil:
+    visible: 'Your progress'
+    timeout: 30000
+- scrollUntilVisible:
+    element: 'Latest weight · 80\.0 kg'
+    direction: DOWN
+- assertVisible: 'Latest weight · 80\.0 kg'

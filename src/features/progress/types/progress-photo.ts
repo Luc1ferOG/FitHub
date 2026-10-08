@@ -1,0 +1,12 @@
+import type { MeasurementValues } from './measurement';
+export type PhotoPose = 'front' | 'side' | 'back';
+export type PhotoStatus = 'pending' | 'ready' | 'deleting';
+export type PhotoMetadata = { date: string; pose: PhotoPose; notes: string };
+export type ProgressPhoto = { id: string; userId: string; photoPath: string; thumbnailPath: string | null; takenAt: string; pose: PhotoPose | 'other'; notes: string; status: PhotoStatus; checksum: string | null };
+export type PhotoPage = { entries: ProgressPhoto[]; nextOffset: number | null };
+export type LocalPhoto = { uri: string; width: number; height: number; owned: boolean };
+export type PreparedImage = { bytes: ArrayBuffer; width: number; height: number };
+export type PreparedPhoto = { full: PreparedImage; thumbnail: PreparedImage; checksum: string };
+export type PermissionState = { granted: boolean; canAskAgain: boolean; status?: 'granted' | 'denied' | 'undetermined'; accessPrivileges?: 'all' | 'limited' | 'none' };
+export type PermissionDecision = 'allowed' | 'request' | 'settings';
+export type PhotoComparison = { before: ProgressPhoto; after: ProgressPhoto; days: number; beforeMeasurements: MeasurementValues | null; afterMeasurements: MeasurementValues | null };

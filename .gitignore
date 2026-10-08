@@ -1,0 +1,16 @@
+node_modules/
+.npm-cache/
+supabase/.temp/
+.expo/
+dist/
+coverage/
+artifacts/
+.env.e2e
+.env
+.env.local
+.env.*
+!.env.example
+*.log
+.DS_Store
+android/
+ios/

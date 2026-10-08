@@ -1,0 +1,38 @@
+appId: com.fithub.app
+name: Create and rejoin a challenge, view leaderboard
+tags: [critical, challenges]
+---
+- runFlow: ../helpers/login.yaml
+- tapOn: 'Challenges'
+- tapOn: 'Create challenge'
+- tapOn: 'Challenge title'
+- inputText: 'E2E Challenge ${E2E_RUN_ID}'
+- hideKeyboard
+# Default inclusive UTC dates are today; this scenario runs on the device's current day.
+- scrollUntilVisible:
+    element:
+      id: 'challenge-submit'
+    direction: DOWN
+- tapOn:
+    id: 'challenge-submit'
+- extendedWaitUntil:
+    visible: 'Leave challenge'
+    timeout: 30000
+# Creators are enrolled automatically. Leave/rejoin explicitly exercises the join action.
+- tapOn: 'Leave challenge'
+- tapOn: 'Leave'
+- extendedWaitUntil:
+    visible: 'Join challenge'
+    timeout: 30000
+- tapOn: 'Join challenge'
+- extendedWaitUntil:
+    visible: '.*Your position: #1.*'
+    timeout: 30000
+- scrollUntilVisible:
+    element: 'Leaderboard'
+    direction: DOWN
+- assertVisible: 'Leaderboard'
+- scrollUntilVisible:
+    element: '.*Rank 1, E2E Athlete.*'
+    direction: DOWN
+- assertVisible: '.*Rank 1, E2E Athlete.*'

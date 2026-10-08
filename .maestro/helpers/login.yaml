@@ -1,0 +1,17 @@
+appId: com.fithub.app
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: 'Welcome back'
+    timeout: 30000
+- tapOn: 'Email'
+- inputText: '${E2E_EMAIL}'
+- tapOn: 'Password'
+- inputText: '${E2E_PASSWORD}'
+- hideKeyboard
+- tapOn: 'Log in'
+- extendedWaitUntil:
+    visible: 'Good .*, E2E Athlete'
+    timeout: 30000
+- assertNotVisible: 'Welcome back'

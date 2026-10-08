@@ -1,0 +1,11 @@
+export type UnitSystem = 'metric' | 'imperial';
+export const measurementFields = ['weightKg', 'bodyFatPercentage', 'chestCm', 'waistCm', 'hipsCm', 'leftArmCm', 'rightArmCm', 'leftThighCm', 'rightThighCm'] as const;
+export type MeasurementField = typeof measurementFields[number];
+export type MeasurementValues = Record<MeasurementField, number | null>;
+export type MeasurementInput = MeasurementValues & { recordedAt: string };
+export type Measurement = MeasurementInput & { id: string; userId: string };
+export type ProgressPeriod = '30d' | '3m' | '6m' | '1y' | 'all';
+export type MetricSummary = { latest: number | null; previous: number | null; starting: number | null; recordedAt: string | null };
+export type ChartPoint = { date: string; weightKg: number | null; waistCm: number | null; bodyFatPercentage: number | null };
+export type ProgressDashboard = { count: number; summaries: Record<MeasurementField, MetricSummary>; points: ChartPoint[] };
+export type MeasurementPage = { entries: Measurement[]; nextOffset: number | null };
