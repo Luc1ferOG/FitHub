@@ -1,10 +1,11 @@
-import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import { getNotifications } from './notification-runtime';
 
 const PREFIX = 'fithub-rest-';
 export class RestNotifications {
   async requestPermission(): Promise<boolean> {
-    if (Platform.OS === 'web') return false;
+    const Notifications = getNotifications();
+    if (!Notifications) return false;
     if (Platform.OS === 'android') await Notifications.setNotificationChannelAsync('workout-rest', {
       name: 'Workout rest timers', importance: Notifications.AndroidImportance.HIGH, sound: 'default',
     });
@@ -13,7 +14,8 @@ export class RestNotifications {
     return (await Notifications.requestPermissionsAsync()).granted;
   }
   async reconcile(rest: { id: string; name: string; endsAt: number; enabled: boolean; userId?: string | null } | null): Promise<void> {
-    if (Platform.OS === 'web') return;
+    const Notifications = getNotifications();
+    if (!Notifications) return;
     const scheduled = await Notifications.getAllScheduledNotificationsAsync();
     await Promise.all(scheduled.filter((item) => item.identifier.startsWith(PREFIX)).map((item) => Notifications.cancelScheduledNotificationAsync(item.identifier)));
     if (!rest || !rest.enabled || rest.endsAt <= Date.now()) return;

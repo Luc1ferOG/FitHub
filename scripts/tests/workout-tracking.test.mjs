@@ -27,6 +27,9 @@ const notificationsStub = stub({
   scheduleNotificationAsync: async (request) => { scheduled.set(request.identifier, request); return request.identifier; },
 });
 const nativeStub = stub({ Platform: { OS: 'android' }, AppState: { currentState: 'active' } });
+await notificationsStub.link(() => { throw new Error('Unexpected native mock import'); });
+await notificationsStub.evaluate();
+const notificationRuntime = stub({ getNotifications: () => notificationsStub.namespace });
 function source(path) {
   if (!modules.has(path)) modules.set(path, new SourceTextModule(stripTypeScriptTypes(readFileSync(path, 'utf8'), { mode: 'transform' }), { identifier: path }));
   return modules.get(path);
@@ -34,6 +37,7 @@ function source(path) {
 async function load(path) {
   const module = source(path);
   if (module.status === 'unlinked') await module.link((specifier, parent) => {
+    if (specifier.endsWith('/notification-runtime')) return notificationRuntime;
     if (specifier === 'zustand/vanilla') return zustandStub;
     if (specifier === 'expo-notifications') return notificationsStub;
     if (specifier === 'react-native') return nativeStub;

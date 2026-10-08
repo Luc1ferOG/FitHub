@@ -22,6 +22,9 @@ const notifications = stub({
   scheduleNotificationAsync: async (request) => { scheduled.push(request); return 'local-id'; },
 });
 const native = stub({ Platform: platform, AppState: appState });
+await notifications.link(() => { throw new Error('Unexpected native mock import'); });
+await notifications.evaluate();
+const notificationRuntime = stub({ getNotifications: () => platform.OS === 'web' ? null : notifications.namespace });
 const intentStore = stub({ useNavigationIntentStore: { getState: () => ({ capture: (path) => captures.push(path) }) } });
 function source(path) {
   if (!modules.has(path)) modules.set(path, new SourceTextModule(stripTypeScriptTypes(readFileSync(path, 'utf8'), { mode: 'transform' }), { identifier: path }));
@@ -30,6 +33,7 @@ function source(path) {
 async function load(path) {
   const module = source(path);
   if (module.status === 'unlinked') await module.link((specifier, parent) => {
+    if (specifier.endsWith('/notification-runtime')) return notificationRuntime;
     if (specifier === 'expo-notifications') return notifications;
     if (specifier === 'react-native') return native;
     if (specifier === '@/store/navigation-intent-store') return intentStore;

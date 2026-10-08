@@ -51,4 +51,10 @@ npx.cmd expo start --go --clear
 
 The phone must have an Expo Go build supporting SDK 57. A successfully exported JavaScript bundle does not establish compatibility with a different Expo Go SDK or verify camera, notifications, secure storage and offline persistence on the device.
 
+### Notifications in Expo Go
+
+Android Expo Go cannot use remote push notifications. FitHub defers importing the notification package and skips notification setup in that environment because its push exports initialize even for local-only callers. Workout timers and logging still work, but this fallback also disables background rest alerts and notification-tap listeners on Android Expo Go. Use a development or production build to test those integrations. Push opt-in in Expo Go reports a development-build requirement rather than registering a device. Native development/production builds retain notification scheduling, listeners, and push registration; web does not initialize native notifications.
+
+See [Expo notification limitations](https://docs.expo.dev/versions/latest/sdk/notifications/). Expo supports local notifications in Expo Go generally; the broader fallback here specifically avoids this application's import-time failure.
+
 Keep `.env.local` private. FitHub expects `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`, not Next.js-prefixed environment variables.

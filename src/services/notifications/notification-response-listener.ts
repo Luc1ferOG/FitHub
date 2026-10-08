@@ -1,13 +1,14 @@
-import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import type { NotificationResponse } from 'expo-notifications';
+import { getNotifications } from './notification-runtime';
 import { notificationTarget, type NotificationTarget } from '@/services/navigation/destinations';
 
 /** One listener for both launch responses and live taps. Never navigate on receipt. */
 export function listenForNotificationResponses(open: (target: NotificationTarget) => void): () => void {
-  if (Platform.OS === 'web') return () => undefined;
+  const Notifications = getNotifications();
+  if (!Notifications) return () => undefined;
   let active = true;
   const seen = new Set<string>();
-  const receive = (response: Notifications.NotificationResponse | null) => {
+  const receive = (response: NotificationResponse | null) => {
     if (!active || !response || ![Notifications.DEFAULT_ACTION_IDENTIFIER, 'open'].includes(response.actionIdentifier)) return;
     const request = response.notification.request;
     // Rest alerts reuse their identifier across sets; delivery date distinguishes
